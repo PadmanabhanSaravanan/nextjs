@@ -13,9 +13,9 @@
   "description": "",
   "type": "module",
   "dependencies": {
-    "@apollo/server": "^4.12.1",
+    "@apollo/server": "^5.4.0",
     "graphql": "^16.11.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
