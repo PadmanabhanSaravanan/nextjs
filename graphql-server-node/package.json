@@ -12,12 +12,25 @@
   "license": "ISC",
   "description": "",
   "type": "module",
+  "overrides": {
+    "@apollo/protobufjs": "^1.2.8",
+    "@protobufjs/codegen": "^2.0.5",
+    "@protobufjs/utf8": "^1.1.1"
+  },
   "dependencies": {
+    "@as-integrations/express4": "^1.1.2",
     "@apollo/server": "^5.5.0",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "graphql": "^16.11.0",
+    "graphql-depth-limit": "^1.1.0",
     "uuid": "^11.1.1"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.15.21",
     "typescript": "^5.8.3"
   }
