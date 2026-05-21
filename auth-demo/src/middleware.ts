@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   
   middlewareLogging(request);
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET || 'supersecretkey' });
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
   const protectedPaths = [ '/dashboard','/blog'];
 

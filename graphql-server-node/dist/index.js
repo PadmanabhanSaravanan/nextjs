@@ -1,10 +1,13 @@
 import express from 'express';
 import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { expressMiddleware } from '@as-integrations/express4';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import fs, { writeFileSync } from 'fs';
 import path from 'path';
+import { GraphQLError } from 'graphql';
+import depthLimit from 'graphql-depth-limit';
 import { v4 as uuidv4 } from 'uuid';
 // Load data from JSON files
 const users = JSON.parse(fs.readFileSync(path.resolve('./data/user.json'), 'utf8'));
@@ -105,13 +108,39 @@ const resolvers = {
         },
     },
 };
+const MAX_QUERY_DEPTH = 8;
+const MAX_QUERY_LENGTH = 10000;
+const querySecurityPlugin = {
+    async requestDidStart() {
+        return {
+            async didResolveOperation(requestContext) {
+                const query = requestContext.request.query;
+                if (!query)
+                    return;
+                if (query.length > MAX_QUERY_LENGTH) {
+                    throw new GraphQLError('Query is too large.');
+                }
+            },
+        };
+    },
+};
 // Start Apollo Server with Express
 const startServer = async () => {
     const app = express();
-    const server = new ApolloServer({ typeDefs, resolvers });
-    //const server = new ApolloServer({ typeDefs, resolvers, plugins: [ApolloServerPluginLandingPageDisabled()] });
+    const isProduction = process.env.NODE_ENV === 'production';
+    app.disable('x-powered-by');
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        validationRules: [depthLimit(MAX_QUERY_DEPTH)],
+        introspection: !isProduction,
+        plugins: [
+            querySecurityPlugin,
+            ...(isProduction ? [ApolloServerPluginLandingPageDisabled()] : []),
+        ],
+    });
     await server.start();
-    app.use('/graphql', cors(), bodyParser.json(), expressMiddleware(server));
+    app.use('/graphql', cors(), bodyParser.json({ limit: '100kb' }), expressMiddleware(server));
     app.listen({ port: 4000 }, () => {
         console.log(`🚀 Server ready at http://localhost:4000/graphql`);
     });
