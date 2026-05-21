@@ -12,6 +12,11 @@
   "license": "ISC",
   "description": "",
   "type": "module",
+  "overrides": {
+    "@apollo/protobufjs": "^1.2.8",
+    "@protobufjs/codegen": "^2.0.5",
+    "@protobufjs/utf8": "^1.1.1"
+  },
   "dependencies": {
     "@apollo/server": "^5.5.0",
     "graphql": "^16.11.0",

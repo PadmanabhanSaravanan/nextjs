@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.next/
+out/
+
+*.js.map
+*.tsbuildinfo
+
+.env
+.env.*
+!.env.example
+
+.DS_Store
+*.log
